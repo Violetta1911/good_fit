@@ -1,16 +1,26 @@
 import { Request, Response, NextFunction } from 'express';
 import { ERROR_CODES } from '../../utils/errorCodes';
-import { createProduct, getAllProducts, getProductById } from './products.service';
+import {
+  createProduct,
+  getAllProducts,
+  getProductById,
+} from './products.service';
 
 export const getWelcome = (_: Request, res: Response): void => {
-  res.send('Welcome to the PRODUCTS API! Use /items to manage your PRODUCTS list.');
+  res.send(
+    'Welcome to the PRODUCTS API! Use /items to manage your PRODUCTS list.',
+  );
 };
 
 export const getProductsController = (_: Request, res: Response): void => {
   res.json(getAllProducts());
 };
 
-export const getProductController = (req: Request, res: Response, next: NextFunction): void => {
+export const getProductController = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): void => {
   const { id } = req.params;
   try {
     const product = getProductById(id);
@@ -20,7 +30,11 @@ export const getProductController = (req: Request, res: Response, next: NextFunc
   }
 };
 
-export const createProductController = (req: Request, res: Response, next: NextFunction): void => {
+export const createProductController = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): void => {
   try {
     const { name, kkal, fats, carbs, proteins, sugar } = req.body;
 
@@ -31,14 +45,7 @@ export const createProductController = (req: Request, res: Response, next: NextF
     }
     // TODO: Validate other fields (kkal, fats, carbs, proteins, sugar) as needed
 
-    const newProduct = createProduct(
-      name,
-      kkal,
-      fats,
-      carbs,
-      proteins,
-      sugar
-    );
+    const newProduct = createProduct(name, kkal, fats, carbs, proteins, sugar);
     res.status(201).json(newProduct);
   } catch (err) {
     next(err);

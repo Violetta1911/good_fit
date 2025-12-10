@@ -1,4 +1,3 @@
-
 import config from './config/config';
 import express, { Application } from 'express';
 import productsRoutes from './modules/products/products.routes';

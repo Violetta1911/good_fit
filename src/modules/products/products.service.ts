@@ -33,9 +33,17 @@ export function createProduct(
   fats: number,
   carbs: number,
   proteins: number,
-  sugar: number
+  sugar: number,
 ): Product {
-  const newProduct: Product = { id: randomUUID(), name, kkal, fats, carbs, proteins, sugar };
+  const newProduct: Product = {
+    id: randomUUID(),
+    name,
+    kkal,
+    fats,
+    carbs,
+    proteins,
+    sugar,
+  };
   products.push(newProduct);
   return newProduct;
 }

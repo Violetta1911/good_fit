@@ -1,0 +1,33 @@
+{
+  "name": "good_fit",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server.ts",
+    "lint": "eslint 'src/**/*.ts'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "pg-promise": "^12.3.0",
+    "typescript-eslint": "^8.49.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.0.0",
+    "dotenv": "^17.2.3",
+    "eslint": "^9.39.1",
+    "express": "^5.2.1",
+    "install": "^0.13.0",
+    "nodemon": "^3.1.11",
+    "npm": "^11.7.0",
+    "prettier": "^3.7.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}

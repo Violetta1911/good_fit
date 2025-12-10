@@ -1,0 +1,4 @@
+export const ERROR_CODES = {
+  EMPTY_CONTENT: 'EMPTY_CONTENT',
+  ITEM_NOT_FOUND: 'ITEM_NOT_FOUND',
+} as const;

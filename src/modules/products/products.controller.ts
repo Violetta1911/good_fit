@@ -12,29 +12,38 @@ export const getWelcome = (_: Request, res: Response): void => {
   );
 };
 
-export const getProductsController = (_: Request, res: Response): void => {
-  res.json(getAllProducts());
+export const getProductsController = async (
+  _: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const products = await getAllProducts();
+    res.status(200).json(products);
+  } catch (error) {
+    next(error);
+  }
 };
 
-export const getProductController = (
+export const getProductController = async (
   req: Request,
   res: Response,
   next: NextFunction,
-): void => {
+): Promise<void> => {
   const { id } = req.params;
   try {
-    const product = getProductById(id);
-    res.json(product);
+    const product = await getProductById(id);
+    res.status(200).json(product);
   } catch (err) {
     next(err);
   }
 };
 
-export const createProductController = (
+export const createProductController = async (
   req: Request,
   res: Response,
   next: NextFunction,
-): void => {
+): Promise<void> => {
   try {
     const { name, kkal, fats, carbs, proteins, sugar } = req.body;
 
@@ -45,7 +54,14 @@ export const createProductController = (
     }
     // TODO: Validate other fields (kkal, fats, carbs, proteins, sugar) as needed
 
-    const newProduct = createProduct(name, kkal, fats, carbs, proteins, sugar);
+    const newProduct = await createProduct(
+      name,
+      kkal,
+      fats,
+      carbs,
+      proteins,
+      sugar,
+    );
     res.status(201).json(newProduct);
   } catch (err) {
     next(err);

@@ -1,19 +1,20 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Request, Response, NextFunction } from 'express';
-import { ERROR_CODES } from '../utils/errorCodes';
-import { getErrorResponse } from '../utils/error';
+import { AppError } from '../utils/errors/AppError';
+import { mapCodeToStatus } from '../utils/errors/error';
 
-interface CustomError extends Error {
-  code?: string;
-}
-
-export function errorHandler(
-  error: CustomError,
-  req: Request,
+export const errorHandler = (
+  err: Error,
+  _req: Request,
   res: Response,
-  next: NextFunction,
-): void {
-  const status = error.code === ERROR_CODES.ITEM_NOT_FOUND ? 404 : 400;
-
-  res.status(status).json(getErrorResponse(error.code ?? 'UNKNOWN_ERROR'));
-}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _next: NextFunction,
+) => {
+  if (err instanceof AppError) {
+    const status = mapCodeToStatus(err.code);
+    return res.status(status).json({
+      message: err.message,
+      code: err.code,
+    });
+  }
+  res.status(500).json({ message: 'Internal server error' });
+};

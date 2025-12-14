@@ -1,10 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import { ERROR_CODES } from '../../utils/errorCodes';
-import {
-  createProduct,
-  getAllProducts,
-  getProductById,
-} from './products.service';
+import productsService from './products.service';
+import { validate } from '../../utils/validate';
+import { createProductSchema } from './products.validation';
+import { CreateProductRequest } from './products.requests';
 
 export const getWelcome = (_: Request, res: Response): void => {
   res.send(
@@ -12,56 +10,44 @@ export const getWelcome = (_: Request, res: Response): void => {
   );
 };
 
-export const getProductsController = async (
+export const getProducts = async (
   _: Request,
   res: Response,
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const products = await getAllProducts();
+    const products = await productsService.getAllProducts();
     res.status(200).json(products);
   } catch (error) {
     next(error);
   }
 };
 
-export const getProductController = async (
+export const getProduct = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ): Promise<void> => {
   const { id } = req.params;
   try {
-    const product = await getProductById(id);
+    const product = await productsService.getProductById(id);
     res.status(200).json(product);
   } catch (err) {
     next(err);
   }
 };
 
-export const createProductController = async (
+export const createProduct = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const { name, kkal, fats, carbs, proteins, sugar } = req.body;
-
-    if (!name || !name.trim()) {
-      const error = new Error('Empty content');
-      (error as unknown as { code?: string }).code = ERROR_CODES.EMPTY_CONTENT;
-      throw error;
-    }
-    // TODO: Validate other fields (kkal, fats, carbs, proteins, sugar) as needed
-
-    const newProduct = await createProduct(
-      name,
-      kkal,
-      fats,
-      carbs,
-      proteins,
-      sugar,
+    const validatedBody = validate<CreateProductRequest>(
+      createProductSchema,
+      req.body,
     );
+    const newProduct = await productsService.createProduct(validatedBody);
     res.status(201).json(newProduct);
   } catch (err) {
     next(err);

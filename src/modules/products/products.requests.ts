@@ -1,5 +1,4 @@
-export interface ProductEntity {
-  id: string;
+export interface CreateProductRequest {
   name: string;
   kkal: number;
   fats: number;

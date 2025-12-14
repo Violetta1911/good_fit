@@ -1,4 +1,5 @@
 import { ObjectSchema } from 'joi';
+import { AppError } from './errors/AppError';
 import { ERROR_CODES } from './errors/errorCodes';
 
 export const validate = <T>(schema: ObjectSchema<T>, data: unknown): T => {
@@ -8,9 +9,10 @@ export const validate = <T>(schema: ObjectSchema<T>, data: unknown): T => {
   });
 
   if (error) {
-    const err = new Error(error.message) as Error & { code?: string };
-    err.code = ERROR_CODES.VALIDATION_ERROR;
-    throw err;
+    throw new AppError(
+      error.details.map((d) => d.message).join(', '),
+      ERROR_CODES.VALIDATION_ERROR,
+    );
   }
 
   return value;

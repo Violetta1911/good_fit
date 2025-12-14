@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import productsService from './products.service';
 import { validate } from '../../utils/validate';
-import { createProductSchema } from './products.validation';
+import { createProductSchema, productIdSchema } from './products.validation';
 import { CreateProductRequest } from './products.requests';
 
 export const getWelcome = (_: Request, res: Response): void => {
@@ -28,7 +28,7 @@ export const getProduct = async (
   res: Response,
   next: NextFunction,
 ): Promise<void> => {
-  const { id } = req.params;
+  const { id } = validate(productIdSchema, req.params);
   try {
     const product = await productsService.getProductById(id);
     res.status(200).json(product);

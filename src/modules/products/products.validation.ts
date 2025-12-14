@@ -1,5 +1,12 @@
 import Joi from 'joi';
 import { CreateProductRequest } from './products.requests';
+/**
+ * Product id validation
+ */
+
+export const productIdSchema = Joi.object({
+  id: Joi.string().uuid().required(),
+});
 
 /**
  * Create product validation

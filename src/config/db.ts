@@ -1,9 +1,10 @@
 import { Pool } from 'pg';
+import { logger } from './logger';
 
 export const pool = new Pool({
   connectionString: process.env.POSTGRES,
 });
 
 pool.on('connect', () => {
-  console.log('✅ Connected to PostgreSQL');
+  logger.info('✅ Connected to PostgreSQL');
 });

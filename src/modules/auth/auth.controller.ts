@@ -16,6 +16,13 @@ export const registerUser = async (
     );
 
     const user = await usersService.createUser(validatedBody);
+    // TODO: Generate JWT token here
+    const token = 'jwt-token-here';
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      sameSite: 'lax',
+    });
 
     res.status(201).json(user);
   } catch (error) {

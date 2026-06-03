@@ -3,44 +3,63 @@ import { AppError } from '../../utils/errors/AppError';
 import { ERROR_CODES } from '../../utils/errors/errorCodes';
 import { CreateProductRequest } from './products.requests';
 import { ProductEntity } from './products.types';
+import { RowDataPacket, ResultSetHeader } from 'mysql2';
 
 const getAllProducts = async (): Promise<ProductEntity[]> => {
-  const { rows } = await pool.query<ProductEntity>(
-    'SELECT * FROM products ORDER BY name',
-  );
-  if (!rows.length) {
-    throw new AppError('Products not found', ERROR_CODES.ITEM_NOT_FOUND);
-  }
+  try {
+    const [rows] = await pool.query<RowDataPacket[]>(
+      'SELECT * FROM products ORDER BY name'
+    );
 
-  return rows;
+    console.log('Rows returned:', rows); // <-- DEBUG
+
+    if (!rows.length) {
+      console.log('No products found in the database'); // <-- DEBUG
+      throw new AppError('Products not found', ERROR_CODES.ITEM_NOT_FOUND);
+    }
+
+    return rows as ProductEntity[];
+  } catch (err: any) {
+    console.error('getAllProducts DB error:', err); // <-- DEBUG exact MySQL error
+    throw new AppError(err.message, ERROR_CODES.EMPTY_CONTENT);
+  }
 };
 
-const getProductById = async (id: string): Promise<ProductEntity> => {
-  const { rows } = await pool.query<ProductEntity>(
-    'SELECT * FROM products WHERE id = $1',
-    [id],
+const getProductById = async (id: number): Promise<ProductEntity> => {
+  const [rows] = await pool.query<RowDataPacket[]>(
+    'SELECT * FROM products WHERE id = ?',
+    [id]
   );
+
   if (!rows.length) {
     throw new AppError('Product not found', ERROR_CODES.ITEM_NOT_FOUND);
   }
 
-  return rows[0];
+  return rows[0] as ProductEntity;
 };
 
 const createProduct = async (
-  data: CreateProductRequest,
+  data: CreateProductRequest
 ): Promise<ProductEntity> => {
   const { name, kkal, fats, carbs, proteins, sugar } = data;
-  const { rows } = await pool.query<ProductEntity>(
+
+  const [result] = await pool.query<ResultSetHeader>(
     `
-    INSERT INTO products (name, kkal, fats, carbohydrates, proteins, sugar)
-    VALUES ($1, $2, $3, $4, $5, $6)
-    RETURNING *
+    INSERT INTO products 
+      (name, kkal, fats, carbohydrates, proteins, sugar)
+    VALUES (?, ?, ?, ?, ?, ?)
     `,
-    [name, kkal, fats, carbs, proteins, sugar],
+    [name, kkal, fats, carbs, proteins, sugar]
   );
 
-  return rows[0];
+  const insertId = result.insertId;
+
+  const [rows] = await pool.query<RowDataPacket[]>(
+    'SELECT * FROM products WHERE id = ?',
+    [insertId]
+  );
+
+  return rows[0] as ProductEntity;
 };
 
 const productsService = {
@@ -48,6 +67,5 @@ const productsService = {
   getProductById,
   createProduct,
 };
-// TODO: Implement updateProduct and deleteProduct functions
 
 export default productsService;

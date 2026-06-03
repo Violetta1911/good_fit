@@ -1,3 +1,12 @@
 /dist
 /node_modules
 .env
+.DS_Store
+
+# Local Azurite emulator state (not part of source)
+__azurite_db_*.json
+__azurite_db_*_extent__.json
+__blobstorage__/
+
+# Vitest coverage output
+/coverage

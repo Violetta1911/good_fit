@@ -4,27 +4,29 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { logger } from './config/logger';
 import authRoutes from './modules/auth/auth.routes';
-import productsRoutes from './modules/products/products.routes';
+//import productsRoutes from './modules/products/products.routes';
 import { errorHandler } from './middleware/errorHandler';
 import { requestLogger } from './middleware/requestLogger';
+import healthRoutes from './modules/health/health.routes'; // Import the health routes
 
-const app: Application = express();
-app.use(
-  cors({
-    origin: process.env.FRONTEND_URL ?? 'http://localhost:3003',
-    credentials: true,
-  }),
-);
-app.use(cookieParser());
+const { port, frontendUrl } = config;
 
-app.use(express.json());
-app.use('/auth', authRoutes);
-app.use('/products', productsRoutes);
-app.use(errorHandler);
-app.use(requestLogger);
+export function buildApp(): Application {
+  const app = express();
+  app.use(cors({ origin: frontendUrl, credentials: true }))
+  app.use(cookieParser());
 
-const { port } = config;
-
-app.listen(port, () => {
-  logger.info(`app is running at http://localhost:${port}`);
-});
+  app.use(express.json());
+  app.use(requestLogger);
+  app.use('/health', healthRoutes);
+  app.use('/auth', authRoutes);
+  //app.use('/products', productsRoutes);
+  app.use(errorHandler);
+  return app;
+}
+if (require.main === module) {
+    const app = buildApp();
+    app.listen(port, () => {
+      logger.info(`app is running at http://localhost:${port}`);
+    });
+  }

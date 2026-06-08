@@ -1,11 +1,11 @@
 import Joi from 'joi';
-import { DateTime } from 'luxon';
 import { RegisterRequest, LoginRequest } from './users.requests';
+import { isValidIanaTimezone } from '../../utils/dates';
 
 const ianaTimezone = Joi.string()
   .max(64)
   .custom((value: string, helpers) => {
-    if (!DateTime.now().setZone(value).isValid) {
+    if (!isValidIanaTimezone(value)) {
       return helpers.error('any.invalid');
     }
     return value;

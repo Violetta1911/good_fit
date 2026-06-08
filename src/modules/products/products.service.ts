@@ -8,7 +8,7 @@ import { RowDataPacket, ResultSetHeader } from 'mysql2';
 const getAllProducts = async (): Promise<ProductEntity[]> => {
   try {
     const [rows] = await pool.query<RowDataPacket[]>(
-      'SELECT * FROM products ORDER BY name'
+      'SELECT * FROM products ORDER BY name',
     );
 
     console.log('Rows returned:', rows); // <-- DEBUG
@@ -19,16 +19,16 @@ const getAllProducts = async (): Promise<ProductEntity[]> => {
     }
 
     return rows as ProductEntity[];
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('getAllProducts DB error:', err); // <-- DEBUG exact MySQL error
-    throw new AppError(err.message, ERROR_CODES.EMPTY_CONTENT);
+    throw new AppError((err as Error).message, ERROR_CODES.EMPTY_CONTENT);
   }
 };
 
 const getProductById = async (id: number): Promise<ProductEntity> => {
   const [rows] = await pool.query<RowDataPacket[]>(
     'SELECT * FROM products WHERE id = ?',
-    [id]
+    [id],
   );
 
   if (!rows.length) {
@@ -39,7 +39,7 @@ const getProductById = async (id: number): Promise<ProductEntity> => {
 };
 
 const createProduct = async (
-  data: CreateProductRequest
+  data: CreateProductRequest,
 ): Promise<ProductEntity> => {
   const { name, kkal, fats, carbs, proteins, sugar } = data;
 
@@ -49,14 +49,14 @@ const createProduct = async (
       (name, kkal, fats, carbohydrates, proteins, sugar)
     VALUES (?, ?, ?, ?, ?, ?)
     `,
-    [name, kkal, fats, carbs, proteins, sugar]
+    [name, kkal, fats, carbs, proteins, sugar],
   );
 
   const insertId = result.insertId;
 
   const [rows] = await pool.query<RowDataPacket[]>(
     'SELECT * FROM products WHERE id = ?',
-    [insertId]
+    [insertId],
   );
 
   return rows[0] as ProductEntity;

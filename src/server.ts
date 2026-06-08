@@ -13,7 +13,7 @@ const { port, frontendUrl } = config;
 
 export function buildApp(): Application {
   const app = express();
-  app.use(cors({ origin: frontendUrl, credentials: true }))
+  app.use(cors({ origin: frontendUrl, credentials: true }));
   app.use(cookieParser());
 
   app.use(express.json());
@@ -25,8 +25,8 @@ export function buildApp(): Application {
   return app;
 }
 if (require.main === module) {
-    const app = buildApp();
-    app.listen(port, () => {
-      logger.info(`app is running at http://localhost:${port}`);
-    });
-  }
+  const app = buildApp();
+  app.listen(port, () => {
+    logger.info(`app is running at http://localhost:${port}`);
+  });
+}

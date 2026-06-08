@@ -1,7 +1,7 @@
-import { DateTime } from "luxon";
+import { DateTime } from 'luxon';
 
 export function isValidIanaTimezone(tz: string): boolean {
-    return DateTime.now().setZone(tz).isValid;
+  return DateTime.now().setZone(tz).isValid;
 }
 
 export function dayBoundsInZone(

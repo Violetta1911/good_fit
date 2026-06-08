@@ -12,13 +12,19 @@ const ianaTimezone = Joi.string()
   }, 'IANA timezone');
 
 export const registerSchema = Joi.object<RegisterRequest>({
-  email: Joi.string().email({ tlds: { allow: false } }).max(254).required(),
+  email: Joi.string()
+    .email({ tlds: { allow: false } })
+    .max(254)
+    .required(),
   password: Joi.string().min(10).max(128).required(),
   name: Joi.string().trim().min(1).max(120).required(),
   timezone: ianaTimezone.required(),
 });
 
 export const loginSchema = Joi.object<LoginRequest>({
-  email: Joi.string().email({ tlds: { allow: false } }).max(254).required(),
+  email: Joi.string()
+    .email({ tlds: { allow: false } })
+    .max(254)
+    .required(),
   password: Joi.string().min(1).max(128).required(),
 });

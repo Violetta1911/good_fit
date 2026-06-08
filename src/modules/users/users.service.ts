@@ -48,7 +48,11 @@ async function createUser(data: RegisterRequest): Promise<UserEntity> {
   }
 
   const found = await getById(id);
-  if (!found) throw new AppError('User vanished after insert', ERROR_CODES.INTERNAL_ERROR);
+  if (!found)
+    throw new AppError(
+      'User vanished after insert',
+      ERROR_CODES.INTERNAL_ERROR,
+    );
   return found;
 }
 
@@ -69,7 +73,10 @@ async function getByEmail(email: string): Promise<UserRow | null> {
   return rows.length ? (rows[0] as UserRow) : null;
 }
 
-async function validateCredentials(email: string, password: string): Promise<UserEntity | null> {
+async function validateCredentials(
+  email: string,
+  password: string,
+): Promise<UserEntity | null> {
   const row = await getByEmail(email);
   if (!row) return null;
   const ok = await bcrypt.compare(password, row.password_hash);

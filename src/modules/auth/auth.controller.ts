@@ -11,18 +11,13 @@ export const registerUser = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const validatedBody = validate<UserRequest>(
-      createUserSchema,
-      req.body,
-    );
+    const validatedBody = validate<UserRequest>(createUserSchema, req.body);
 
     const user = await usersService.createUser(validatedBody);
 
-    const token = jwt.sign(
-      { userId: user.id },
-      process.env.JWT_SECRET!,
-      { expiresIn: '7d' }
-    );
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, {
+      expiresIn: '7d',
+    });
 
     res.cookie('token', token, {
       httpOnly: true,
@@ -41,22 +36,17 @@ export const loginUser = async (
   res: Response,
   next: NextFunction,
 ): Promise<void> => {
-  try{
-     const validatedBody = validate<UserRequest>(
-      createUserSchema,
-      req.body,
-    );
+  try {
+    const validatedBody = validate<UserRequest>(createUserSchema, req.body);
 
     const user = await usersService.validateUser(validatedBody);
     if (!user) {
       res.status(401).json({ message: 'Invalid email or password' });
       return;
     }
-    const token = jwt.sign(
-      { userId: user.id },
-      process.env.JWT_SECRET!,
-      { expiresIn: '7d' }
-    );
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, {
+      expiresIn: '7d',
+    });
     res.cookie('token', token, {
       httpOnly: true,
       sameSite: 'lax',
@@ -64,20 +54,25 @@ export const loginUser = async (
     });
 
     res.status(200).json(user);
-
   } catch (error) {
     next(error);
   }
-}
+};
 
-export const getMe = async (req: Request, res: Response, next: NextFunction) => {
+export const getMe = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const token = req.cookies.token;
     if (!token) {
       return res.status(401).json({ error: 'Not authenticated' });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
+      userId: string;
+    };
 
     const user = await usersService.getUserById(Number(decoded.userId));
     if (!user) {

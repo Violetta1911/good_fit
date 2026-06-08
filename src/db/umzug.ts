@@ -25,7 +25,8 @@ export function buildUmzug(pool: Pool) {
             for (const stmt of splitSql(sql)) await pool.query(stmt);
           },
           down: async () => {
-            if (!fs.existsSync(downPath)) throw new Error(`No down migration for ${name}`);
+            if (!fs.existsSync(downPath))
+              throw new Error(`No down migration for ${name}`);
             const sql = fs.readFileSync(downPath, 'utf-8');
             for (const stmt of splitSql(sql)) await pool.query(stmt);
           },
@@ -42,15 +43,19 @@ export function buildUmzug(pool: Pool) {
           )
         `);
         const [rows] = await pool.query<RowDataPacket[]>(
-          'SELECT name FROM schema_migrations ORDER BY name'
+          'SELECT name FROM schema_migrations ORDER BY name',
         );
         return rows.map((r) => r.name as string);
       },
       async logMigration({ name }) {
-        await pool.query('INSERT INTO schema_migrations (name) VALUES (?)', [name]);
+        await pool.query('INSERT INTO schema_migrations (name) VALUES (?)', [
+          name,
+        ]);
       },
       async unlogMigration({ name }) {
-        await pool.query('DELETE FROM schema_migrations WHERE name = ?', [name]);
+        await pool.query('DELETE FROM schema_migrations WHERE name = ?', [
+          name,
+        ]);
       },
     },
     logger,
@@ -62,7 +67,9 @@ export function buildUmzug(pool: Pool) {
 function splitSql(sql: string): string[] {
   const out: string[] = [];
   let buf = '';
-  let inSingle = false, inDouble = false, inBacktick = false;
+  let inSingle = false,
+    inDouble = false,
+    inBacktick = false;
   for (let i = 0; i < sql.length; i++) {
     const c = sql[i];
     if (c === "'" && !inDouble && !inBacktick) inSingle = !inSingle;

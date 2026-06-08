@@ -8,4 +8,3 @@ router.post('/login', controller.loginUser);
 router.get('/me', controller.getMe);
 
 export default router;
-    

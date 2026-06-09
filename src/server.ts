@@ -7,7 +7,7 @@ import authRoutes from './modules/auth/auth.routes';
 //import productsRoutes from './modules/products/products.routes';
 import { errorHandler } from './middleware/errorHandler';
 import { requestLogger } from './middleware/requestLogger';
-import healthRoutes from './modules/health/health.routes'; // Import the health routes
+import healthRoutes from './modules/health/health.routes';
 
 const { port, frontendUrl } = config;
 

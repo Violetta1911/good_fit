@@ -1,9 +1,3 @@
-declare module 'express-serve-static-core' {
-  interface Request {
-    user?: { id: string; timezone: string };
-  }
-}
-
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import config from '../config/config';

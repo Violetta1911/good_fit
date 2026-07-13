@@ -28,3 +28,8 @@ export const loginSchema = Joi.object<LoginRequest>({
     .required(),
   password: Joi.string().min(1).max(128).required(),
 });
+
+export const updateMeSchema = Joi.object({
+  name: Joi.string().trim().min(1).max(120),
+  timezone: ianaTimezone,
+}).min(1);

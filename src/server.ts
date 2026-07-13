@@ -8,6 +8,8 @@ import authRoutes from './modules/auth/auth.routes';
 import { errorHandler } from './middleware/errorHandler';
 import { requestLogger } from './middleware/requestLogger';
 import healthRoutes from './modules/health/health.routes';
+import meRoutes from './modules/users/me.routes';
+import { authRequired } from './middleware/authRequired';
 
 const { port, frontendUrl } = config;
 
@@ -20,6 +22,7 @@ export function buildApp(): Application {
   app.use(requestLogger);
   app.use('/health', healthRoutes);
   app.use('/auth', authRoutes);
+  app.use('/me', authRequired, meRoutes);
   //app.use('/products', productsRoutes);
   app.use(errorHandler);
   return app;

@@ -84,9 +84,32 @@ async function validateCredentials(
   return rowToEntity(row);
 }
 
+async function updateUser(
+  id: string,
+  patch: { name?: string; timezone?: string },
+): Promise<UserEntity> {
+  const sets: string[] = [];
+  const params: string[] = [];
+  if (patch.name !== undefined) {
+    sets.push('name = ?');
+    params.push(patch.name);
+  }
+  if (patch.timezone !== undefined) {
+    sets.push('timezone = ?');
+    params.push(patch.timezone);
+  }
+  if (sets.length) {
+    await pool.query(`UPDATE users SET ${sets.join(', ')} WHERE id = ?`, [...params, id]);
+  }
+  const updated = await getById(id);
+  if (!updated) throw new AppError('User not found', ERROR_CODES.ITEM_NOT_FOUND);
+  return updated;
+}
+
 const usersService = {
   getById,
   createUser,
   validateCredentials,
+  updateUser,
 };
 export default usersService;

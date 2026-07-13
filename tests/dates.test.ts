@@ -1,5 +1,6 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, afterEach, vi } from 'vitest';
 import { isValidIanaTimezone, dayBoundsInZone } from '../src/utils/dates';
+import { userToday } from '../src/utils/dates';
 
 describe('isValidIanaTimezone', () => {
   it('accepts Europe/Warsaw', () => {
@@ -54,5 +55,20 @@ describe('dayBoundsInZone', () => {
 
   it('throws on invalid zone', () => {
     expect(() => dayBoundsInZone(new Date(), 'Foo/Bar')).toThrow();
+  });
+});
+
+describe('userToday', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('returns the date as seen in the given timezone, not the server', () => {
+    vi.useFakeTimers();
+    // 23:30 UTC on July 4 = 01:30 on July 5 in Warsaw (UTC+2 in summer)
+    vi.setSystemTime(new Date('2026-07-04T23:30:00Z'));
+
+    expect(userToday('UTC')).toBe('2026-07-04');
+    expect(userToday('Europe/Warsaw')).toBe('2026-07-05');
   });
 });

@@ -17,3 +17,9 @@ export function dayBoundsInZone(
     end: dt.endOf('day').toJSDate(),
   };
 }
+
+export function userToday(tz: string): string {
+  const today = DateTime.now().setZone(tz).toISODate();
+  if (!today) throw new Error(`Invalid IANA timezone: ${tz}`);
+  return today;
+}

@@ -99,10 +99,14 @@ async function updateUser(
     params.push(patch.timezone);
   }
   if (sets.length) {
-    await pool.query(`UPDATE users SET ${sets.join(', ')} WHERE id = ?`, [...params, id]);
+    await pool.query(`UPDATE users SET ${sets.join(', ')} WHERE id = ?`, [
+      ...params,
+      id,
+    ]);
   }
   const updated = await getById(id);
-  if (!updated) throw new AppError('User not found', ERROR_CODES.ITEM_NOT_FOUND);
+  if (!updated)
+    throw new AppError('User not found', ERROR_CODES.ITEM_NOT_FOUND);
   return updated;
 }
 

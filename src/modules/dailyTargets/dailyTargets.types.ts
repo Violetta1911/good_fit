@@ -22,12 +22,4 @@ export interface DailyTargetEntity {
   steps: number;
   createdAt: string; // ISO 8601
 }
-export interface DailyTargetInput {
-  effectiveFrom: string; // YYYY-MM-DD
-  kcal: number;
-  fatG: number;
-  proteinG: number;
-  carbG: number;
-  waterL: number;
-  steps: number;
-}
+export type DailyTargetInput = Omit<DailyTargetEntity, 'id' | 'createdAt'>;

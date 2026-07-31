@@ -5,7 +5,11 @@ import { ERROR_CODES } from '../../utils/errors/errorCodes';
 import usersService from './users.service';
 import { updateMeSchema } from './users.validation';
 
-export const getMe = async (req: Request, res: Response, next: NextFunction) => {
+export const getMe = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const user = await usersService.getById(req.user!.id);
     if (!user) throw new AppError('User not found', ERROR_CODES.AUTH_REQUIRED);
@@ -15,7 +19,11 @@ export const getMe = async (req: Request, res: Response, next: NextFunction) => 
   }
 };
 
-export const patchMe = async (req: Request, res: Response, next: NextFunction) => {
+export const patchMe = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const patch = validate<{ name?: string; timezone?: string }>(
       updateMeSchema,

@@ -11,9 +11,9 @@ function rowToEntity(row: WeightLogRow): WeightLogEntity {
   return {
     userId: row.user_id,
     entryDate: row.entry_date,
-    weightKg: Number(row.weight_kg).toFixed(2),
+    weightKg: Number(row.weight_kg),
     note: row.note,
-    createdAt: row.created_at,
+    createdAt: row.created_at.toISOString(),
   };
 }
 

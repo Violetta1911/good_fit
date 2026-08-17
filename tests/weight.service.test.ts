@@ -12,7 +12,7 @@ let userId: string;
 function weightInput(overrides: Partial<WeightLogInput> = {}): WeightLogInput {
   return {
     entryDate: '2026-06-01',
-    weightKg: '72.40',
+    weightKg: 72.4,
     ...overrides,
   };
 }
@@ -39,12 +39,13 @@ beforeEach(async () => {
 
 describe('weightService.upsert / listRange', () => {
   it('reads back an upserted weight as a number, with the date as a YYYY-MM-DD string', async () => {
-    await weightService.upsert(userId, weightInput({ entryDate: '2026-06-01', weightKg: '72.40' }));
+    await weightService.upsert(userId, weightInput({ entryDate: '2026-06-01', weightKg: 72.4 }));
     const rows = await weightService.listRange(userId, '2026-06-01', '2026-06-01');
     expect(rows).toHaveLength(1);
-    expect(typeof rows[0].weightKg).toBe('string');
-    expect(rows[0].weightKg).toBe('72.40');
+    expect(typeof rows[0].weightKg).toBe('number');
+    expect(rows[0].weightKg).toBe(72.4);
     expect(rows[0].entryDate).toBe('2026-06-01');
+    expect(rows[0].createdAt).toMatch(/^\d{4}-\d{2}-\d{2}T[\d:.]+Z$/);
   });
 
   it('passes a note through, and stores null (not "") when omitted', async () => {
@@ -59,14 +60,14 @@ describe('weightService.upsert / listRange', () => {
   });
 
   it('upsert replaces the same date: one row, new weight and note (idempotent)', async () => {
-    await weightService.upsert(userId, weightInput({ entryDate: '2026-06-01', weightKg: '72.40' }));
+    await weightService.upsert(userId, weightInput({ entryDate: '2026-06-01', weightKg: 72.4 }));
     await weightService.upsert(
       userId,
-      weightInput({ entryDate: '2026-06-01', weightKg: '72.10', note: 'corrected' }),
+      weightInput({ entryDate: '2026-06-01', weightKg: 72.1, note: 'corrected' }),
     );
     const rows = await weightService.listRange(userId, '2026-06-01', '2026-06-01');
     expect(rows).toHaveLength(1);
-    expect(rows[0].weightKg).toBe('72.10');
+    expect(rows[0].weightKg).toBe(72.1);
     expect(rows[0].note).toBe('corrected');
   });
 
@@ -107,14 +108,14 @@ describe('weightService user scoping', () => {
     const userB = await usersService.createUser({
       email: 'weight-b@x.co', password: 'longpassword1', name: 'B', timezone: 'UTC',
     });
-    await weightService.upsert(userId, weightInput({ entryDate: '2026-06-01', weightKg: '72.40' }));
-    await weightService.upsert(userB.id, weightInput({ entryDate: '2026-06-01', weightKg: '99.9' }));
+    await weightService.upsert(userId, weightInput({ entryDate: '2026-06-01', weightKg: 72.4 }));
+    await weightService.upsert(userB.id, weightInput({ entryDate: '2026-06-01', weightKg: 99.9 }));
 
     const all = await weightService.listRange(userId);
     expect(all).toHaveLength(1);
-    expect(all[0].weightKg).toBe('72.40');
+    expect(all[0].weightKg).toBe(72.4);
 
     const windowed = await weightService.listRange(userId, '2026-06-01', '2026-06-01');
-    expect(windowed.map((r) => r.weightKg)).toEqual(['72.40']);
+    expect(windowed.map((r) => r.weightKg)).toEqual([72.4]);
   });
 });

@@ -1,9 +1,0 @@
-export interface ProductEntity {
-  id: string;
-  name: string;
-  kkal: number;
-  fats: number;
-  carbs: number;
-  proteins: number;
-  sugar: number;
-}

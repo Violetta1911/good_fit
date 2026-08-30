@@ -12,7 +12,8 @@
   "test:watch": "vitest",
   "migrate": "ts-node src/db/migrate.ts up",
   "migrate:down": "ts-node src/db/migrate.ts down",
-  "migrate:pending": "ts-node src/db/migrate.ts pending"
+  "migrate:pending": "ts-node src/db/migrate.ts pending",
+  "seed:products": "ts-node src/db/seeds/products.seed.ts"
 },
   "keywords": [],
   "author": "",

@@ -1,11 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 import { validate } from '../../utils/validate';
-import { putWeightSchema, rangeQuerySchema, dateParamSchema } from './weight.validation';
+import {
+  putWeightSchema,
+  rangeQuerySchema,
+  dateParamSchema,
+} from './weight.validation';
 import weightService from './weight.service';
 import { AppError } from '../../utils/errors/AppError';
 import { ERROR_CODES } from '../../utils/errors/errorCodes';
 import { PutWeightBody } from './weight.types';
-
 
 export const putWeight = async (
   req: Request,

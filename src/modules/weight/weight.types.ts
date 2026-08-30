@@ -21,4 +21,3 @@ export interface PutWeightBody {
   weightKg: number;
   note?: string | null;
 }
-
